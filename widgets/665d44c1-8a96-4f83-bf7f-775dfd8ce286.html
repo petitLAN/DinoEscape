@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+  <head><base href="../"><link rel="stylesheet" href="fonts.css"><script>window.WIDGET_ID="665d44c1-8a96-4f83-bf7f-775dfd8ce286"</script><script src="data.js"></script><script src="widget-bridge.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <style>
+      body {
+        margin: 0;
+        font-family: var(--font-family-fontFamily, "Arial", sans-serif);
+        min-height: 100vh;
+        box-sizing: border-box;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        color: var(--text-color);
+        transition: color 0.3s ease;
+      }
+
+      #hangman-app {
+        flex: 1;
+      }
+
+      .keyboard-button {
+        background-color: var(--keyboard-btn-bg);
+        color: var(--keyboard-btn-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.25rem;
+        cursor: pointer;
+        user-select: none;
+        transition-property:
+          color, background-color, border-color, text-decoration-color, fill, stroke;
+        transition-duration: 200ms;
+        transition-timing-function: ease-in-out;
+        min-width: 40px;
+        aspect-ratio: 1 / 1;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: var(--button-border-radius); /* Apply custom radius */
+      }
+
+      .keyboard-button:hover:not(.button-disabled):not(.button-correct):not(
+          .button-incorrect
+        ) {
+        filter: brightness(0.9);
+      }
+
+      .keyboard-button.button-correct {
+        background-color: var(--correct-guess-color);
+        color: white;
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .keyboard-button.button-incorrect {
+        background-color: var(--incorrect-guess-color);
+        color: white;
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .keyboard-button.button-disabled {
+        pointer-events: none;
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      #word-display {
+        font-size: 1.75rem;
+        line-height: 1;
+      }
+
+      #mistake-counter {
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: block;
+        margin-top: 6px;
+      }
+
+      #game-message {
+        font-size: 0.875rem;
+        font-weight: 700;
+        margin-top: 0.25rem;
+      }
+
+      #content-wrapper {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      #hangman-drawing {
+        display: block;
+        width: auto;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      #hangman-drawing.size-large  { max-width: 100%; }
+      #hangman-drawing.size-medium { max-width: 60%;  }
+      #hangman-drawing.size-small  { max-width: 35%;  }
+
+      .hangman-part {
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      .hangman-part.visible {
+        opacity: 1;
+      }
+
+    </style>
+
+    <!-- Automatically Generated Tailwind CSS -->
+    <style>
+      *,
+      ::backdrop,
+      :after,
+      :before {
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+        --tw-pan-x: ;
+        --tw-pan-y: ;
+        --tw-pinch-zoom: ;
+        --tw-scroll-snap-strictness: proximity;
+        --tw-gradient-from-position: ;
+        --tw-gradient-via-position: ;
+        --tw-gradient-to-position: ;
+        --tw-ordinal: ;
+        --tw-slashed-zero: ;
+        --tw-numeric-figure: ;
+        --tw-numeric-spacing: ;
+        --tw-numeric-fraction: ;
+        --tw-ring-inset: ;
+        --tw-ring-offset-width: 0px;
+        --tw-ring-offset-color: #fff;
+        --tw-ring-color: #3b82f680;
+        --tw-ring-offset-shadow: 0 0 #0000;
+        --tw-ring-shadow: 0 0 #0000;
+        --tw-shadow: 0 0 #0000;
+        --tw-shadow-colored: 0 0 #0000;
+        --tw-blur: ;
+        --tw-brightness: ;
+        --tw-contrast: ;
+        --tw-grayscale: ;
+        --tw-hue-rotate: ;
+        --tw-invert: ;
+        --tw-saturate: ;
+        --tw-sepia: ;
+        --tw-drop-shadow: ;
+        --tw-backdrop-blur: ;
+        --tw-backdrop-brightness: ;
+        --tw-backdrop-contrast: ;
+        --tw-backdrop-grayscale: ;
+        --tw-backdrop-hue-rotate: ;
+        --tw-backdrop-invert: ;
+        --tw-backdrop-opacity: ;
+        --tw-backdrop-saturate: ;
+        --tw-backdrop-sepia: ;
+        --tw-contain-size: ;
+        --tw-contain-layout: ;
+        --tw-contain-paint: ;
+        --tw-contain-style: ;
+      } /*! tailwindcss v3.4.18 | MIT License | https://tailwindcss.com*/
+      *,
+      :after,
+      :before {
+        box-sizing: border-box;
+        border: 0 solid #e5e7eb;
+      }
+      :after,
+      :before {
+        --tw-content: "";
+      }
+      :host,
+      html {
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -moz-tab-size: 4;
+        -o-tab-size: 4;
+        tab-size: 4;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          sans-serif,
+          Apple Color Emoji,
+          Segoe UI Emoji,
+          Segoe UI Symbol,
+          Noto Color Emoji;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        margin: 0;
+        line-height: inherit;
+      }
+      hr {
+        height: 0;
+        color: inherit;
+        border-top-width: 1px;
+      }
+      abbr:where([title]) {
+        -webkit-text-decoration: underline dotted;
+        text-decoration: underline dotted;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+      a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+      b,
+      strong {
+        font-weight: bolder;
+      }
+      code,
+      kbd,
+      pre,
+      samp {
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          Liberation Mono,
+          Courier New,
+          monospace;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        font-size: 1em;
+      }
+      small {
+        font-size: 80%;
+      }
+      sub,
+      sup {
+        font-size: 75%;
+        line-height: 0;
+        position: relative;
+        vertical-align: initial;
+      }
+      sub {
+        bottom: -0.25em;
+      }
+      sup {
+        top: -0.5em;
+      }
+      table {
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+      }
+      button,
+      input,
+      optgroup,
+      select,
+      textarea {
+        font-family: inherit;
+        font-feature-settings: inherit;
+        font-variation-settings: inherit;
+        font-size: 100%;
+        font-weight: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+      }
+      button,
+      select {
+        text-transform: none;
+      }
+      button,
+      input:where([type="button"]),
+      input:where([type="reset"]),
+      input:where([type="submit"]) {
+        -webkit-appearance: button;
+        background-color: initial;
+        background-image: none;
+      }
+      :-moz-focusring {
+        outline: auto;
+      }
+      :-moz-ui-invalid {
+        box-shadow: none;
+      }
+      progress {
+        vertical-align: initial;
+      }
+      ::-webkit-inner-spin-button,
+      ::-webkit-outer-spin-button {
+        height: auto;
+      }
+      [type="search"] {
+        -webkit-appearance: textfield;
+        outline-offset: -2px;
+      }
+      ::-webkit-search-decoration {
+        -webkit-appearance: none;
+      }
+      ::-webkit-file-upload-button {
+        -webkit-appearance: button;
+        font: inherit;
+      }
+      summary {
+        display: list-item;
+      }
+      blockquote,
+      dd,
+      dl,
+      figure,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      hr,
+      p,
+      pre {
+        margin: 0;
+      }
+      fieldset {
+        margin: 0;
+      }
+      fieldset,
+      legend {
+        padding: 0;
+      }
+      menu,
+      ol,
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      dialog {
+        padding: 0;
+      }
+      textarea {
+        resize: vertical;
+      }
+      input::-moz-placeholder,
+      textarea::-moz-placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      [role="button"],
+      button {
+        cursor: pointer;
+      }
+      :disabled {
+        cursor: default;
+      }
+      audio,
+      canvas,
+      embed,
+      iframe,
+      img,
+      object,
+      svg,
+      video {
+        display: block;
+        vertical-align: middle;
+      }
+      img,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+      [hidden]:where(:not([hidden="until-found"])) {
+        display: none;
+      }
+      .static {
+        position: static;
+      }
+      .mx-1 {
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+      }
+      .my-4 {
+        margin-top: 1rem;
+      }
+      .mb-4,
+      .my-4 {
+        margin-bottom: 1rem;
+      }
+      .mt-2 {
+        margin-top: 0.5rem;
+      }
+      .inline-block {
+        display: inline-block;
+      }
+      .flex {
+        display: flex;
+      }
+      .grid {
+        display: grid;
+      }
+      .hidden {
+        display: none;
+      }
+      .h-full {
+        height: 100%;
+      }
+      .min-h-\[1em\] {
+        min-height: 1em;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .max-w-full {
+        max-width: 100%;
+      }
+      .flex-1 {
+        flex: 1 1 0%;
+      }
+      .flex-initial {
+        flex: 0 1 auto;
+      }
+      .select-none {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+      .grid-cols-7 {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+      }
+      .flex-row {
+        flex-direction: row;
+      }
+      .flex-col {
+        flex-direction: column;
+      }
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      .items-center {
+        align-items: center;
+      }
+      .justify-center {
+        justify-content: center;
+      }
+      .gap-2 {
+        gap: 0.5rem;
+      }
+      .border {
+        border-width: 1px;
+      }
+      .p-4 {
+        padding: 1rem;
+      }
+      .pb-4 {
+        padding-bottom: 1rem;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .font-semibold {
+        font-weight: 600;
+      }
+      .tracking-widest {
+        letter-spacing: 0.1em;
+      }
+      .filter {
+        filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale)
+          var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia)
+          var(--tw-drop-shadow);
+      }
+      .transition {
+        transition-property:
+          color, background-color, border-color, text-decoration-color, fill, stroke,
+          opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+        transition-property:
+          color, background-color, border-color, text-decoration-color, fill, stroke,
+          opacity, box-shadow, transform, filter, backdrop-filter;
+        transition-property:
+          color, background-color, border-color, text-decoration-color, fill, stroke,
+          opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 0.15s;
+      }
+      @media (min-width: 640px) {
+        .sm\:my-6 {
+          margin-top: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        .sm\:gap-3 {
+          gap: 0.75rem;
+        }
+        .sm\:gap-4 {
+          gap: 1rem;
+        }
+      }
+      @media (min-width: 768px) {
+        .md\:my-8 {
+          margin-top: 2rem;
+          margin-bottom: 2rem;
+        }
+        .md\:max-h-full {
+          max-height: 100%;
+        }
+        .md\:w-1\/2 {
+          width: 50%;
+        }
+        .md\:flex-row {
+          flex-direction: row;
+        }
+        .md\:gap-4 {
+          gap: 1rem;
+        }
+        .md\:overflow-y-auto {
+          overflow-y: auto;
+        }
+      }
+      @media (min-width: 1024px) {
+        .lg\:my-10 {
+          margin-top: 2.5rem;
+          margin-bottom: 2.5rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="hangman-app"
+      class="flex flex-col h-full w-full p-4 items-center justify-center"
+    >
+      <div
+        id="content-wrapper"
+        class="flex-1 flex flex-col justify-center items-center w-full"
+      >
+        <!-- Hangman Drawing -->
+        <svg id="hangman-drawing" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+          <!-- Gallows (always visible) -->
+          <line x1="10" y1="240" x2="190" y2="240" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="15"  x2="40"  y2="240" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <line x1="40" y1="15"  x2="140" y2="15"  stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <line x1="140" y1="15" x2="140" y2="46"  stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <!-- Body parts (revealed one by one on each mistake) -->
+          <circle id="hm-head"      cx="140" cy="63"  r="17"                                              stroke="var(--hangman-color)" stroke-width="3" fill="none" class="hangman-part"/>
+          <line   id="hm-body"      x1="140" y1="80"  x2="140" y2="142"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-arm-l"     x1="140" y1="98"  x2="108" y2="120"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-arm-r"     x1="140" y1="98"  x2="172" y2="120"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-leg-l"     x1="140" y1="142" x2="112" y2="182"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-leg-r"     x1="140" y1="142" x2="168" y2="182"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-forearm-l" x1="108" y1="120" x2="94"  y2="140"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-forearm-r" x1="172" y1="120" x2="186" y2="140"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-foot-l"    x1="112" y1="182" x2="96"  y2="204"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+          <line   id="hm-foot-r"    x1="168" y1="182" x2="184" y2="204"                                  stroke="var(--hangman-color)" stroke-width="3" stroke-linecap="round" class="hangman-part"/>
+        </svg>
+
+      </div>
+
+      <!-- Keyboard Area (also holds word display and status in horizontal mode) -->
+      <div id="keyboard-wrapper" class="flex-initial w-full flex flex-col items-center pb-4">
+        <!-- Word Display Area -->
+        <div
+          id="word-display"
+          class="flex flex-wrap gap-2 justify-center font-bold tracking-widest my-3 text-center select-none min-h-[1em] w-full"
+        >
+          <!-- Letters will go here -->
+        </div>
+
+        <!-- Game Info / Status -->
+        <div
+          id="game-status"
+          class="font-semibold mb-2 text-center select-none flex-initial"
+        >
+          <span id="mistake-counter"></span>
+          <div id="game-message"></div>
+        </div>
+
+        <div
+          id="keyboard"
+          class="grid grid-cols-7 gap-2 sm:gap-3 md:gap-4 my-4 max-w-full w-full"
+        >
+          <!-- Buttons A-Z will go here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const KEYBOARD_LAYOUTS = {
+        standard: ['Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M'],
+        es:       ['Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Ñ','Z','X','C','V','B','N','M'],
+        pt:       ['Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Ç','Z','X','C','V','B','N','M','Á','Â','Ã','À','É','Ê','Í','Ó','Ô','Õ','Ú'],
+        de:       ['Q','W','E','R','T','Z','U','I','O','P','Ü','A','S','D','F','G','H','J','K','L','Ö','Ä','Y','X','C','V','B','N','M','ß'],
+        fr:       ['A','Z','E','R','T','Y','U','I','O','P','Q','S','D','F','G','H','J','K','L','M','W','X','C','V','B','N','À','Â','Æ','Ç','É','È','Ê','Ë','Î','Ï','Ô','Œ','Ù','Û','Ü'],
+        he:       ['ק','ר','א','ט','ו','ן','ם','פ','ש','ד','ג','כ','ע','י','ח','ל','ך','ף','ז','ס','ב','ה','נ','מ','צ','ת','ץ'],
+      };
+
+      function render(config) {
+        const hangmanApp = document.getElementById('hangman-app');
+        const wordDisplay = document.getElementById('word-display');
+        const mistakeCounter = document.getElementById('mistake-counter');
+        const keyboardDiv = document.getElementById('keyboard');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const keyboardWrapper = document.getElementById('keyboard-wrapper');
+
+        // Reset application state and content on re-render
+        wordDisplay.innerHTML = '';
+        keyboardDiv.innerHTML = '';
+        hangmanApp.classList.remove('flex-row', 'md:flex-row'); // Clean up previous layout classes
+
+        // Apply custom colors
+        document.documentElement.style.setProperty('--text-color', config.textColor);
+        document.documentElement.style.setProperty(
+          '--keyboard-btn-bg',
+          config.keyboardButtonBgColor,
+        );
+        document.documentElement.style.setProperty(
+          '--keyboard-btn-text',
+          config.keyboardButtonTextColor,
+        );
+        document.documentElement.style.setProperty(
+          '--correct-guess-color',
+          config.correctGuessColor,
+        );
+        document.documentElement.style.setProperty(
+          '--incorrect-guess-color',
+          config.incorrectGuessColor,
+        );
+        document.documentElement.style.setProperty(
+          '--hangman-color',
+          config.hangmanColor || '#333333',
+        );
+
+        const hangmanDrawing = document.getElementById('hangman-drawing');
+        hangmanDrawing.classList.remove('size-large', 'size-medium', 'size-small');
+        hangmanDrawing.classList.add('size-' + (config.hangmanSize || 'large'));
+
+        // Apply font family and button border radius
+        document.documentElement.style.setProperty(
+          '--button-border-radius',
+          config.buttonBorderRadius,
+        );
+
+        // Set layout orientation and keyboard position
+        const position = config.keyboardPosition || 'bottom';
+        contentWrapper.style.order = '';
+        keyboardWrapper.style.order = '';
+
+        if (config.layoutOrientation === 'horizontal') {
+          hangmanApp.classList.add('flex-col', 'md:flex-row');
+          contentWrapper.classList.add('md:w-1/2');
+          contentWrapper.classList.remove('justify-end');
+          contentWrapper.classList.add('justify-center');
+          keyboardWrapper.classList.add('md:w-1/2', 'md:max-h-full');
+          keyboardDiv.classList.add('md:max-h-full', 'md:overflow-y-auto');
+          if (position === 'left') {
+            keyboardWrapper.style.order = '1';
+            contentWrapper.style.order = '2';
+          }
+        } else {
+          hangmanApp.classList.add('flex-col');
+          contentWrapper.classList.remove('md:w-1/2');
+          contentWrapper.classList.remove('justify-center');
+          contentWrapper.classList.add('justify-end');
+          keyboardWrapper.classList.remove('md:w-1/2', 'md:max-h-full');
+          keyboardDiv.classList.remove('md:max-h-full', 'md:overflow-y-auto');
+          if (position === 'top') {
+            keyboardWrapper.style.order = '1';
+            contentWrapper.style.order = '2';
+          }
+        }
+
+        // Game State
+        let wordToGuess = '';
+        let guessedLetters = new Set();
+        let incorrectGuesses = 0;
+        const maxMistakes = Number.parseInt(config.maxMistakes, 10) || 7;
+        let gameWon = false;
+        let gameLost = false;
+
+        // --- Game Initialization ---
+        function initializeGame() {
+          const lang = config.keyboardLanguage || 'standard';
+          const rawWord = (config.word || '').trim();
+          const configuredWord = lang === 'he' ? rawWord : rawWord.toUpperCase();
+
+          if (configuredWord.replace(/ /g, '').length === 0) {
+            disableKeyboard();
+            return;
+          }
+
+          wordToGuess = configuredWord;
+          guessedLetters = new Set();
+          incorrectGuesses = 0;
+          gameWon = false;
+          gameLost = false;
+          updateUI();
+        }
+
+        // --- UI Update Function ---
+        const HANGMAN_PARTS = ['hm-head','hm-body','hm-arm-l','hm-arm-r','hm-leg-l','hm-leg-r','hm-forearm-l','hm-forearm-r','hm-foot-l','hm-foot-r'];
+
+        function updateUI() {
+          // Update hangman drawing — proportional to maxMistakes so it's always
+          // complete when the player loses, regardless of the configured attempts.
+          const partsToShow = Math.round((incorrectGuesses / maxMistakes) * HANGMAN_PARTS.length);
+          HANGMAN_PARTS.forEach((id, i) => {
+            document.getElementById(id).classList.toggle('visible', i < partsToShow);
+          });
+
+          // Update word display
+          wordDisplay.innerHTML = wordToGuess
+            .split('')
+            .map(letter => {
+              if (letter === ' ') {
+                return `<span class="inline-block mx-1">&nbsp;</span>`;
+              }
+              return `<span class="inline-block mx-1">${guessedLetters.has(letter) ? letter : config.letterPlaceholder || '_'}</span>`;
+            })
+            .join('');
+
+          // Update mistake counter
+          if (config.showMistakesCounter) {
+            mistakeCounter.textContent = `${config.mistakesLabelPrefix || ''}${incorrectGuesses} / ${maxMistakes}${config.mistakesLabelSuffix || ''}`;
+          } else {
+            mistakeCounter.textContent = '';
+          }
+
+          // Update keyboard buttons
+          const buttons = keyboardDiv.querySelectorAll('.keyboard-button');
+          for (const button of buttons) {
+            const letter = button.dataset.letter;
+            if (guessedLetters.has(letter)) {
+              if (wordToGuess.includes(letter)) {
+                button.classList.add('button-correct');
+              } else {
+                button.classList.add('button-incorrect');
+              }
+            } else if (gameWon || gameLost) {
+              button.classList.add('button-disabled');
+            } else {
+              button.classList.remove(
+                'button-correct',
+                'button-incorrect',
+                'button-disabled',
+              );
+            }
+          }
+
+          // Check for win/lose conditions
+          const currentWordDisplay = wordToGuess
+            .split('')
+            .map(letter => {
+              if (letter === ' ') {
+                return ' ';
+              }
+              return guessedLetters.has(letter) ? letter : '_';
+            })
+            .join('');
+          if (currentWordDisplay === wordToGuess && !gameWon && !gameLost) {
+            gameWon = true;
+            disableKeyboard();
+            if (config.winAction) {
+              genially.runAction(config.winAction);
+            }
+          } else if (incorrectGuesses >= maxMistakes && !gameLost && !gameWon) {
+            gameLost = true;
+            disableKeyboard();
+            if (config.loseAction) {
+              genially.runAction(config.loseAction);
+            }
+          }
+        }
+
+        // --- Keyboard Handling ---
+        function handleGuess(letter) {
+          if (gameWon || gameLost || guessedLetters.has(letter)) {
+            return;
+          }
+
+          guessedLetters.add(letter);
+
+          if (!wordToGuess.includes(letter)) {
+            incorrectGuesses++;
+            if (config.mistakeActions) {
+              genially.runAction(config.mistakeActions);
+            }
+          }
+          updateUI();
+        }
+
+        function disableKeyboard() {
+          const buttons = keyboardDiv.querySelectorAll('.keyboard-button');
+          for (const button of buttons) {
+            button.classList.add('button-disabled');
+            button.style.pointerEvents = 'none'; // Ensure no clicks
+          }
+        }
+
+        // --- Build Keyboard ---
+        function buildKeyboard() {
+          keyboardDiv.innerHTML = '';
+          const lang = config.keyboardLanguage || 'standard';
+          const letters = KEYBOARD_LAYOUTS[lang] || KEYBOARD_LAYOUTS.standard;
+          for (const letter of letters) {
+            const button = document.createElement('button');
+            button.classList.add('keyboard-button');
+            button.textContent = letter;
+            button.dataset.letter = letter;
+            button.addEventListener('click', () => handleGuess(letter));
+            keyboardDiv.appendChild(button);
+          }
+        }
+
+        // Initial setup
+        buildKeyboard();
+        initializeGame();
+      }
+
+      // Auto-executing function to connect and render
+      (async () => {
+        const initialConfig = await genially.connect();
+
+        genially.on('config', newConfig => {
+          render(newConfig);
+        });
+
+        render(initialConfig);
+      })();
+    </script>
+  </body>
+</html>

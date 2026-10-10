@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head><base href="../"><link rel="stylesheet" href="fonts.css"><script>window.WIDGET_ID="4e1892bb-8c8f-4c8e-bd92-611ada0f5f49"</script><script src="data.js"></script><script src="widget-bridge.js"></script>
+  <meta charset="UTF-8">
+  
+  <style>
+    :root {
+      --u: min(1vw, 1vh);
+      --bg: #D96B39;
+      --panel: #D8BF79;
+      --text: #29251D;
+      --highlight: #F0BF32;
+      --hotspot: #F3D99A;
+      --font-title: var(--font-family-titleFont, 'Unbounded', sans-serif);
+      --font-body: var(--font-family-bodyFont, 'DM Sans', sans-serif);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(10px, 4vh, 40px);
+    }
+
+    .comic-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: calc(1.5 * var(--u));
+      position: relative;
+      max-width: 1400px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 calc(1 * var(--u));
+      flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .comic-title {
+      font-family: var(--font-title);
+      font-weight: 900;
+      font-size: clamp(1rem, 3.5vw, 2rem);
+      margin: 0;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--highlight);
+      -webkit-text-stroke: calc(0.12 * var(--u)) var(--text);
+      paint-order: stroke fill;
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: break-word;
+      padding-right: 1rem;
+    }
+
+    .scene-counter {
+      font-family: var(--font-title);
+      font-size: clamp(10px, 1.5vw, 0.9rem);
+      background: var(--panel);
+      padding: calc(0.4 * var(--u)) calc(1.2 * var(--u));
+      border: calc(0.3 * var(--u)) solid var(--text);
+      border-radius: 4px;
+      transform: rotate(-1deg);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .main-area {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: calc(2 * var(--u));
+      min-height: 0;
+    }
+
+    .illustration-wrapper {
+      position: relative;
+      background: var(--panel);
+      border: calc(0.4 * var(--u)) solid var(--text);
+      box-shadow: calc(0.6 * var(--u)) calc(0.6 * var(--u)) 0 var(--text);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .illustration-wrapper::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: none;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .scene-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .narrative-container {
+      display: flex;
+      flex-direction: column;
+      gap: calc(1.5 * var(--u));
+      min-height: 0;
+    }
+
+    .narrative-panel {
+      background: #FFF;
+      border: calc(0.3 * var(--u)) solid var(--text);
+      padding: clamp(15px, 2.5vw, 30px);
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+      box-shadow: calc(0.6 * var(--u)) calc(0.6 * var(--u)) 0 var(--text);
+      border-radius: 4px;
+    }
+
+    .narrative-text {
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      line-height: 1.5;
+      margin: 0;
+      overflow-wrap: break-word;
+      font-weight: 500;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: calc(1 * var(--u));
+      flex-shrink: 0;
+    }
+
+    button {
+      font-family: var(--font-title);
+      font-weight: bold;
+      padding: clamp(10px, 1.5vw, 18px) clamp(15px, 2.5vw, 40px);
+      border: calc(0.3 * var(--u)) solid var(--text);
+      cursor: pointer;
+      font-size: clamp(12px, 1.5vw, 1rem);
+      transition: all 0.2s ease;
+      min-height: 44px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .btn-prev {
+      background: #7a8450;
+      color: white;
+    }
+
+    .btn-next {
+      background: var(--highlight);
+      color: var(--text);
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 0 var(--text);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 0 0 var(--text);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .completion-screen {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 100;
+      padding: clamp(20px, 5vw, 60px);
+    }
+
+    .completion-screen h2 {
+      font-family: var(--font-title);
+      font-size: clamp(1.5rem, 5vw, 3.5rem);
+      margin-bottom: calc(2 * var(--u));
+      color: var(--highlight);
+      -webkit-text-stroke: calc(0.15 * var(--u)) var(--text);
+      paint-order: stroke fill;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .completion-msg {
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      margin-bottom: calc(4 * var(--u));
+      max-width: 800px;
+      line-height: 1.4;
+      overflow-wrap: break-word;
+      font-weight: 500;
+    }
+
+    @media (max-aspect-ratio: 11/10) {
+      .main-area {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.1fr 1fr;
+      }
+      .illustration-wrapper {
+        height: 100%;
+      }
+    }
+
+    .narrative-panel::-webkit-scrollbar {
+      width: calc(0.8 * var(--u));
+      min-width: 6px;
+    }
+    .narrative-panel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .narrative-panel::-webkit-scrollbar-thumb {
+      background: var(--text);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body data-component-width="1100px" data-component-height="640px">
+  <div class="comic-container" id="app">
+    <header>
+      <h1 class="comic-title" id="comicTitle">Piertje bij CERN</h1>
+      <div class="scene-counter" id="counter"></div>
+    </header>
+
+    <div class="main-area" id="comicBoard">
+      <div class="illustration-wrapper">
+        <img src="" alt="" class="scene-img" id="sceneImg">
+      </div>
+
+      <div class="narrative-container">
+        <div class="narrative-panel">
+          <p class="narrative-text" id="narrativeText"></p>
+        </div>
+        <div class="controls">
+          <button class="btn-prev" id="btnPrev"></button>
+          <button class="btn-next" id="btnNext"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="completion-screen" id="endScreen">
+      <h2 id="endTitle">Einde van de Tour</h2>
+      <p class="completion-msg" id="endMsg"></p>
+      <div data-genially-retry>
+          <button id="btnRestart" class="btn-next"></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (async () => {
+      const initialConfig = await genially.connect();
+      let state = {
+        currentSceneIndex: 0,
+        completed: false
+      };
+
+      const els = {
+        app: document.getElementById('app'),
+        title: document.getElementById('comicTitle'),
+        counter: document.getElementById('counter'),
+        img: document.getElementById('sceneImg'),
+        narrative: document.getElementById('narrativeText'),
+        prev: document.getElementById('btnPrev'),
+        next: document.getElementById('btnNext'),
+        endScreen: document.getElementById('endScreen'),
+        endMsg: document.getElementById('endMsg'),
+        restart: document.getElementById('btnRestart'),
+        endTitle: document.getElementById('endTitle')
+      };
+
+      function render(config) {
+        if (!config || !config.scenes || config.scenes.length === 0) return;
+        
+        const root = document.documentElement;
+        root.style.setProperty('--bg', config.bgColor || '#D96B39');
+        root.style.setProperty('--panel', config.panelColor || '#D8BF79');
+        root.style.setProperty('--text', config.textColor || '#29251D');
+        root.style.setProperty('--highlight', config.highlightColor || '#F0BF32');
+        root.style.setProperty('--hotspot', config.paleHighlightColor || '#F3D99A');
+
+        const scene = config.scenes[state.currentSceneIndex];
+        if (!scene) return;
+
+        els.title.innerText = config.comicTitle || 'Piertje bij CERN';
+        
+        const counterFormat = config.sceneCounterFormat || 'Scène {current} van {total}';
+        els.counter.innerText = counterFormat
+          .replace('{current}', state.currentSceneIndex + 1)
+          .replace('{total}', config.scenes.length);
+
+        els.img.src = scene.sceneImage?.source || '';
+        els.img.alt = scene.title || 'Strip scene';
+        els.narrative.innerText = scene.narrativeText || '';
+
+        els.prev.innerText = config.prevButtonLabel || 'Vorige';
+        els.next.innerText = config.nextButtonLabel || 'Volgende';
+        
+        els.prev.disabled = state.currentSceneIndex === 0;
+
+        if (state.completed) {
+          els.endScreen.style.display = 'flex';
+          els.endMsg.innerText = config.completionMessage || '';
+          els.restart.innerText = config.restartButtonLabel || 'Opnieuw';
+          els.endTitle.innerText = config.comicTitle || 'Einde van de Tour';
+        } else {
+          els.endScreen.style.display = 'none';
+        }
+      }
+
+      function nextScene() {
+        const config = genially.config;
+        if (state.currentSceneIndex < config.scenes.length - 1) {
+          state.currentSceneIndex++;
+          genially.setState({ index: state.currentSceneIndex, completed: false });
+          render(config);
+        } else {
+          completeComic();
+        }
+      }
+
+      function prevScene() {
+        if (state.currentSceneIndex > 0) {
+          state.currentSceneIndex--;
+          genially.setState({ index: state.currentSceneIndex, completed: false });
+          render(genially.config);
+        }
+      }
+
+      function completeComic() {
+        // Continue to the configured page without showing a restart overlay.
+        if (genially.config.onCompletedAction) {
+          genially.setState({ index: 0, completed: false });
+          genially.runAction(genially.config.onCompletedAction);
+          return;
+        }
+      }
+
+      function restart() {
+        state.currentSceneIndex = 0;
+        state.completed = false;
+        genially.setState({ index: 0, completed: false });
+        render(genially.config);
+      }
+
+      els.next.addEventListener('click', nextScene);
+      els.prev.addEventListener('click', prevScene);
+      els.restart.addEventListener('click', restart);
+
+      genially.on("config", (newConfig) => {
+        render(newConfig);
+      });
+
+      render(initialConfig);
+
+      // Persistence restoration
+      genially.getState().then((saved) => {
+        if (saved && typeof saved.index === 'number') {
+          // If already completed in tracking, trackingState wins later
+          state.currentSceneIndex = saved.index;
+          state.completed = !!saved.completed;
+          render(genially.config);
+        }
+      });
+
+      // Tracking state handling (even if not scoreable, we follow standard)
+      genially.onTrackingState((s) => {
+        // Since isScoreable is false, we don't lock interaction based on canAnswer
+        // but we can use previousAnswer if it exists.
+        if (s && s.previousAnswer) {
+            // Note: Since this is sequential exploration, previousAnswer implies they finished.
+            // We only show completion if state says so, to allow re-browsing.
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>

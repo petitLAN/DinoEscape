@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+  <head><base href="../"><link rel="stylesheet" href="fonts.css"><script>window.WIDGET_ID="5690728e-cb65-496c-a498-75df5b9e2ca1"</script><script src="data.js"></script><script src="widget-bridge.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <style>
+      :root {
+        --font-family-fontFamily: "Source Sans Pro", sans-serif;
+      }
+
+      /* Custom styles for responsiveness and animations */
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        /* Fills iframe height */
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        font-family: var(--font-family-fontFamily);
+        overflow: hidden;
+        /* Prevent global scrollbars from animations or content overflow */
+      }
+
+      #app {
+        flex: 1;
+        /* Fills remaining space */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Hide scrollbars for the main body */
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      body {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+      }
+
+      /* Shake animation for incorrect input */
+      .shake-animation {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+
+        20%,
+        60% {
+          transform: translateX(-8px);
+        }
+
+        40%,
+        80% {
+          transform: translateX(8px);
+        }
+      }
+
+      /* Custom Tailwind focus ring color using CSS variables */
+      .focus\:ring-current:focus {
+        outline: 2px solid var(--dynamic-ring-color);
+        outline-offset: 2px;
+      }
+    </style>
+    <style>
+      *,
+      ::backdrop,
+      :after,
+      :before {
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+        --tw-pan-x: ;
+        --tw-pan-y: ;
+        --tw-pinch-zoom: ;
+        --tw-scroll-snap-strictness: proximity;
+        --tw-gradient-from-position: ;
+        --tw-gradient-via-position: ;
+        --tw-gradient-to-position: ;
+        --tw-ordinal: ;
+        --tw-slashed-zero: ;
+        --tw-numeric-figure: ;
+        --tw-numeric-spacing: ;
+        --tw-numeric-fraction: ;
+        --tw-ring-inset: ;
+        --tw-ring-offset-width: 0px;
+        --tw-ring-offset-color: #fff;
+        --tw-ring-color: #3b82f680;
+        --tw-ring-offset-shadow: 0 0 #0000;
+        --tw-ring-shadow: 0 0 #0000;
+        --tw-shadow: 0 0 #0000;
+        --tw-shadow-colored: 0 0 #0000;
+        --tw-blur: ;
+        --tw-brightness: ;
+        --tw-contrast: ;
+        --tw-grayscale: ;
+        --tw-hue-rotate: ;
+        --tw-invert: ;
+        --tw-saturate: ;
+        --tw-sepia: ;
+        --tw-drop-shadow: ;
+        --tw-backdrop-blur: ;
+        --tw-backdrop-brightness: ;
+        --tw-backdrop-contrast: ;
+        --tw-backdrop-grayscale: ;
+        --tw-backdrop-hue-rotate: ;
+        --tw-backdrop-invert: ;
+        --tw-backdrop-opacity: ;
+        --tw-backdrop-saturate: ;
+        --tw-backdrop-sepia: ;
+        --tw-contain-size: ;
+        --tw-contain-layout: ;
+        --tw-contain-paint: ;
+        --tw-contain-style: ;
+      }
+
+      /*! tailwindcss v3.4.18 | MIT License | https://tailwindcss.com*/
+      *,
+      :after,
+      :before {
+        box-sizing: border-box;
+        border: 0 solid #e5e7eb;
+      }
+
+      :after,
+      :before {
+        --tw-content: "";
+      }
+
+      :host,
+      html {
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -moz-tab-size: 4;
+        -o-tab-size: 4;
+        tab-size: 4;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          sans-serif,
+          Apple Color Emoji,
+          Segoe UI Emoji,
+          Segoe UI Symbol,
+          Noto Color Emoji;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        margin: 0;
+        line-height: inherit;
+      }
+
+      hr {
+        height: 0;
+        color: inherit;
+        border-top-width: 1px;
+      }
+
+      abbr:where([title]) {
+        -webkit-text-decoration: underline dotted;
+        text-decoration: underline dotted;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+
+      b,
+      strong {
+        font-weight: bolder;
+      }
+
+      code,
+      kbd,
+      pre,
+      samp {
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          Liberation Mono,
+          Courier New,
+          monospace;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        font-size: 1em;
+      }
+
+      small {
+        font-size: 80%;
+      }
+
+      sub,
+      sup {
+        font-size: 75%;
+        line-height: 0;
+        position: relative;
+        vertical-align: initial;
+      }
+
+      sub {
+        bottom: -0.25em;
+      }
+
+      sup {
+        top: -0.5em;
+      }
+
+      table {
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+      }
+
+      button,
+      input,
+      optgroup,
+      select,
+      textarea {
+        font-family: inherit;
+        font-feature-settings: inherit;
+        font-variation-settings: inherit;
+        font-size: 100%;
+        font-weight: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+      }
+
+      button,
+      select {
+        text-transform: none;
+      }
+
+      button,
+      input:where([type="button"]),
+      input:where([type="reset"]),
+      input:where([type="submit"]) {
+        -webkit-appearance: button;
+        background-color: initial;
+        background-image: none;
+      }
+
+      :-moz-focusring {
+        outline: auto;
+      }
+
+      :-moz-ui-invalid {
+        box-shadow: none;
+      }
+
+      progress {
+        vertical-align: initial;
+      }
+
+      ::-webkit-inner-spin-button,
+      ::-webkit-outer-spin-button {
+        height: auto;
+      }
+
+      [type="search"] {
+        -webkit-appearance: textfield;
+        outline-offset: -2px;
+      }
+
+      ::-webkit-search-decoration {
+        -webkit-appearance: none;
+      }
+
+      ::-webkit-file-upload-button {
+        -webkit-appearance: button;
+        font: inherit;
+      }
+
+      summary {
+        display: list-item;
+      }
+
+      blockquote,
+      dd,
+      dl,
+      figure,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      hr,
+      p,
+      pre {
+        margin: 0;
+      }
+
+      fieldset {
+        margin: 0;
+      }
+
+      fieldset,
+      legend {
+        padding: 0;
+      }
+
+      menu,
+      ol,
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      dialog {
+        padding: 0;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      input::-moz-placeholder,
+      textarea::-moz-placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+
+      [role="button"],
+      button {
+        cursor: pointer;
+      }
+
+      :disabled {
+        cursor: default;
+      }
+
+      audio,
+      canvas,
+      embed,
+      iframe,
+      img,
+      object,
+      svg,
+      video {
+        display: block;
+        vertical-align: middle;
+      }
+
+      img,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+
+      [hidden]:where(:not([hidden="until-found"])) {
+        display: none;
+      }
+
+      .static {
+        position: static;
+      }
+
+      .relative {
+        position: relative;
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .h-full {
+        height: 100%;
+      }
+
+      .w-full {
+        width: 100%;
+      }
+
+      .max-w-sm {
+        max-width: 24rem;
+      }
+
+      .transform {
+        transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+          rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+          scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+      }
+
+      .flex-col {
+        flex-direction: column;
+      }
+
+      .items-center {
+        align-items: center;
+      }
+
+      .justify-center {
+        justify-content: center;
+      }
+
+      .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(1.5rem * (1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+      }
+
+      .rounded-lg {
+        border-radius: 0.5rem;
+      }
+
+      .border-2 {
+        border-width: 2px;
+      }
+
+      .p-4 {
+        padding: 1rem;
+      }
+
+      .p-8 {
+        padding: 2rem;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+      }
+
+      .font-bold {
+        font-weight: 700;
+      }
+
+      .font-semibold {
+        font-weight: 600;
+      }
+
+      .uppercase {
+        text-transform: uppercase;
+      }
+
+      .tracking-wider {
+        letter-spacing: 0.05em;
+      }
+
+      .text-white {
+        --tw-text-opacity: 1;
+        color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+      }
+
+      .outline {
+        outline-style: solid;
+      }
+
+      .ring {
+        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
+          var(--tw-ring-offset-color);
+        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+          calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+        box-shadow:
+          var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+      }
+
+      .transition-all {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 0.15s;
+      }
+
+      .duration-300 {
+        transition-duration: 0.3s;
+      }
+
+      .ease-in-out {
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .hover\:scale-105:hover {
+        --tw-scale-x: 1.05;
+        --tw-scale-y: 1.05;
+        transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+          rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+          scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+      }
+
+      .focus\:outline-none:focus {
+        outline: 2px solid #0000;
+        outline-offset: 2px;
+      }
+
+      .focus\:ring-current:focus {
+        --tw-ring-color: currentColor;
+      }
+
+      .active\:scale-95:active {
+        --tw-scale-x: 0.95;
+        --tw-scale-y: 0.95;
+        transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+          rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+          scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="app"
+      class="relative w-full h-full flex flex-col items-center justify-center space-y-6 w-full p-8 transition-all duration-300 ease-in-out"
+    >
+      <p id="prompt-message" class="text-center font-semibold text-lg"></p>
+      <input
+        type="text"
+        id="access-code-input"
+        class="max-w-sm w-full p-4 rounded-lg border-2 focus:outline-none focus:ring-current transition-all duration-300 ease-in-out text-center"
+        aria-label="Access Code Input"
+      />
+      <button
+        type="button"
+        id="unlock-button"
+        class="max-w-sm w-full p-4 rounded-lg font-bold text-white uppercase tracking-wider transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-current"
+        aria-label="Unlock Content"
+      ></button>
+    </div>
+
+    <script>
+      function render(config) {
+        const app = document.getElementById('app');
+        const promptMessageElem = document.getElementById('prompt-message');
+        const accessCodeInput = document.getElementById('access-code-input');
+        const unlockButton = document.getElementById('unlock-button');
+
+        // Apply configurable styles
+        app.style.backgroundColor = config.widgetBackgroundColor || '#00000000';
+
+        promptMessageElem.textContent = config.promptMessage || 'Enter the access code:';
+        promptMessageElem.style.color = config.textColor || '#000000';
+        promptMessageElem.style.fontSize = config.fontSize || '1.5rem';
+        promptMessageElem.style.fontFamily =
+          (config.fontFamily?.name || config.fontFamily) || 'Source Sans Pro, sans-serif';
+
+        accessCodeInput.style.backgroundColor = config.inputBackgroundColor || '#dde6ec';
+        accessCodeInput.style.color = config.textColor || '#000000';
+        accessCodeInput.style.borderRadius = config.inputBorderRadius || '8px';
+        accessCodeInput.style.fontFamily =
+          (config.fontFamily?.name || config.fontFamily) || 'Source Sans Pro, sans-serif';
+        accessCodeInput.style.fontSize = config.fontSize || '1.2rem';
+        accessCodeInput.placeholder = config.inputPlaceholder || 'Enter code'; // Use new config for placeholder
+        accessCodeInput.style.borderColor = config.inputBackgroundColor;
+        accessCodeInput.style.setProperty(
+          '--dynamic-ring-color',
+          config.buttonBackgroundColor || '#6c29ff',
+        );
+
+        unlockButton.textContent = config.buttonLabel || 'Unlock';
+        unlockButton.style.backgroundColor = config.buttonBackgroundColor || '#6c29ff';
+        unlockButton.style.color = config.buttonTextColor || '#ffffff';
+        unlockButton.style.borderRadius = config.buttonBorderRadius || '8px';
+        unlockButton.style.fontFamily =
+          (config.fontFamily?.name || config.fontFamily) || 'Source Sans Pro, sans-serif';
+        unlockButton.style.fontSize = config.fontSize || '1.2rem';
+        unlockButton.style.setProperty(
+          '--dynamic-ring-color',
+          config.buttonBackgroundColor || '#6c29ff',
+        );
+
+        // Clear animations
+        accessCodeInput.classList.remove('shake-animation');
+
+        // Event listener for unlock button
+        unlockButton.onclick = () => {
+          const enteredCode = accessCodeInput.value.trim();
+          const correctCode = config.correctAccessCode;
+
+          // Reset elements for new animation cycle
+          accessCodeInput.classList.remove('shake-animation');
+          void accessCodeInput.offsetWidth; // Trigger reflow to restart animation
+
+          if (enteredCode === correctCode) {
+            accessCodeInput.value = ''; // Clear input on success
+            if (config.onCorrectCodeAction) {
+              genially.runAction(config.onCorrectCodeAction);
+            }
+          } else {
+            // Add a shake animation for incorrect input
+            accessCodeInput.classList.add('shake-animation');
+            if (config.onIncorrectCodeAction) {
+              genially.runAction(config.onIncorrectCodeAction);
+            }
+          }
+        };
+      }
+
+      // Auto-executing function to connect to Genially
+      (async () => {
+        const initialConfig = await genially.connect();
+
+        genially.on('config', newConfig => {
+          render(newConfig);
+        });
+
+        render(initialConfig);
+      })();
+    </script>
+  </body>
+</html>

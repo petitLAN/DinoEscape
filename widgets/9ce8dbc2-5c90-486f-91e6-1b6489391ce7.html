@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><base href="../"><link rel="stylesheet" href="fonts.css"><script>window.WIDGET_ID="9ce8dbc2-5c90-486f-91e6-1b6489391ce7"</script><script src="data.js"></script><script src="widget-bridge.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <style>
+      :root {
+        /* Fonts */
+        --font-family-gameFont: "Roboto", sans-serif;
+        --font-family-hintFont: "Roboto", sans-serif;
+
+        /* Colors */
+        --key-bg: #4a90e2;
+        --key-text: #ffffff;
+        --key-padding: 12px;
+        --cell-hidden: #e0e0e0;
+        --cell-revealed: #2ecc71;
+        --container-bg: transparent;
+        --letter-size: 20px;
+
+        /* Hint Colors */
+        --hint-color: #666666;
+
+        /* Feedback Colors */
+        --hit-color: #2ecc71;
+        --miss-color: #e74c3c;
+
+        /* Attempt Colors */
+        --attempt-available: #ffd700;
+        --attempt-spent: #bdc3c7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-family: var(--font-family-gameFont, sans-serif);
+      }
+
+      .widget-root {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 2%;
+      }
+
+      .widget-scale-wrapper {
+        margin: auto;
+        transform-origin: center center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .game-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: var(--container-bg);
+        width: 100%;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Header & Lives */
+      .header-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end; /* Lives aligned to the right */
+        min-height: 30px;
+        width: 100%;
+      }
+
+      .hint-container {
+        width: 100%;
+        font-size: 16px;
+        color: var(--hint-color);
+        font-family: var(--font-family-hintFont);
+        font-style: normal; /* Regular text, no italics */
+        text-align: center;
+        margin-top: 10px; /* Spacing from alphabet */
+        display: none; /* Hidden by default, toggled to flex */
+        align-items: center;
+        justify-content: center; /* Centered horizontally */
+        gap: 8px; /* Gap between icon and text */
+      }
+
+      .hint-icon {
+        width: 1.2em;
+        height: 1.2em;
+        flex-shrink: 0;
+        fill: currentColor; /* Matches text color */
+      }
+
+      .attempts-row {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .life-indicator {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: var(--attempt-available);
+        transition:
+          transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          background-color 0.4s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .life-indicator.inactive {
+        transform: scale(0.85);
+        background-color: var(--attempt-spent);
+        box-shadow: none;
+      }
+
+      .life-overflow {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.15);
+        color: var(--key-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+      }
+
+      /* Phrase Panel */
+      .panel-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .panel-grid {
+        display: grid;
+        grid-template-columns: repeat(14, 1fr);
+        gap: 6px;
+        width: 100%;
+      }
+
+      .panel-cell {
+        aspect-ratio: 1;
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        perspective: 600px;
+      }
+
+      .panel-cell.empty {
+        visibility: hidden;
+      }
+
+      .panel-cell-inner {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .panel-cell-inner.revealed {
+        transform: rotateY(180deg);
+      }
+
+      .panel-cell-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: clamp(12px, 2.5vw, 24px);
+      }
+
+      .panel-cell-front {
+        background-color: var(--cell-hidden);
+        color: transparent;
+      }
+
+      .panel-cell-back {
+        background-color: var(--cell-revealed);
+        color: #fff;
+        transform: rotateY(180deg);
+      }
+
+      /* Alphabet Keyboard */
+      .alphabet-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(36px, 1fr));
+        gap: 8px;
+        width: 100%;
+        padding-top: 10px;
+      }
+
+      .alphabet-button {
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: var(--letter-size);
+        font-weight: 600;
+        background-color: var(--key-bg);
+        color: var(--key-text);
+        padding: var(--key-padding);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.1s,
+          opacity 0.2s,
+          background-color 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
+        user-select: none;
+        min-width: 0;
+        position: relative;
+        overflow: visible;
+        z-index: 1;
+        touch-action: manipulation;
+      }
+
+      .alphabet-button::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.2);
+        opacity: 0;
+        transition: opacity 0.2s;
+        border-radius: 8px;
+      }
+
+      @media (hover: hover) {
+        .alphabet-button:not(.disabled):hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 0 rgba(0, 0, 0, 0.15);
+          z-index: 2;
+        }
+
+        .alphabet-button:not(.disabled):hover::after {
+          opacity: 1;
+        }
+      }
+
+      .alphabet-button:not(.disabled):active {
+        transform: translateY(1px);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      .alphabet-button.disabled {
+        cursor: default;
+        box-shadow: none;
+        pointer-events: none;
+      }
+
+      /* Feedback States */
+      .alphabet-button.correct {
+        background-color: var(--hit-color) !important;
+        color: #fff !important;
+      }
+
+      .alphabet-button.incorrect {
+        background-color: var(--miss-color) !important;
+        color: #fff !important;
+      }
+
+      /* Animations */
+      .anim-pulse {
+        animation: pulse 0.6s ease both;
+      }
+
+      @keyframes shake {
+        10%,
+        90% {
+          transform: translateX(-1px);
+        }
+        20%,
+        80% {
+          transform: translateX(2px);
+        }
+        30%,
+        50%,
+        70% {
+          transform: translateX(-4px);
+        }
+        40%,
+        60% {
+          transform: translateX(4px);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Particles */
+      .particle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: particleOut 0.8s ease-out forwards;
+        z-index: 5;
+      }
+
+      @keyframes particleOut {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--x), var(--y)) scale(0);
+          opacity: 0;
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="widget-root">
+      <div class="widget-scale-wrapper">
+        <div id="gameContainer" class="game-container">
+          <div class="header-row">
+            <div class="attempts-row" id="attemptsRow">
+              <!-- Lives generated here -->
+            </div>
+          </div>
+
+          <div class="panel-wrapper">
+            <div id="panelGrid" class="panel-grid">
+              <!-- Phrase generated here -->
+            </div>
+          </div>
+
+          <div id="alphabetGrid" class="alphabet-grid">
+            <!-- Keyboard generated here -->
+          </div>
+
+          <!-- Hint moved below alphabet -->
+          <div class="hint-container" id="hintContainer">
+            <!-- Lightbulb Icon -->
+            <svg class="hint-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.93 12.07 7 10.28 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.28-.93 3.07-2.15 4.1zM9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1z"
+              />
+            </svg>
+            <span id="hintText"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Game State
+      let state = {
+        revealed: [], // { dom, letter, isRevealed }
+        attemptsLeft: 6,
+        totalAttempts: 6,
+        isGameOver: false,
+        config: null,
+      };
+
+      const dom = {
+        root: document.documentElement,
+        wrapper: document.querySelector('.widget-scale-wrapper'),
+        container: document.getElementById('gameContainer'),
+        panel: document.getElementById('panelGrid'),
+        keyboard: document.getElementById('alphabetGrid'),
+        lives: document.getElementById('attemptsRow'),
+        hintContainer: document.getElementById('hintContainer'),
+        hintText: document.getElementById('hintText'),
+      };
+
+      // Utils
+      const sanitizeAttempts = val => Math.max(1, Math.min(20, parseInt(val, 10) || 6));
+
+      // Particle Effect
+      function triggerParticles(x, y, color) {
+        const particleCount = 12;
+        for (let i = 0; i < particleCount; i++) {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          p.style.backgroundColor = color;
+          p.style.left = x + 'px';
+          p.style.top = y + 'px';
+
+          // Random angle and distance
+          const angle = Math.random() * Math.PI * 2;
+          const velocity = 20 + Math.random() * 40;
+          const tx = Math.cos(angle) * velocity;
+          const ty = Math.sin(angle) * velocity;
+
+          p.style.setProperty('--x', `${tx}px`);
+          p.style.setProperty('--y', `${ty}px`);
+
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 800);
+        }
+      }
+
+      function calculateLayout(phrase) {
+        // 14 columns max
+        const MAX_COLS = 14;
+        const words = phrase
+          .toUpperCase()
+          .split(/\s+/)
+          .filter(w => w);
+        let grid = [];
+        let currentRow = [];
+
+        words.forEach(word => {
+          if (
+            currentRow.length + word.length + (currentRow.length > 0 ? 1 : 0) <=
+            MAX_COLS
+          ) {
+            if (currentRow.length > 0) currentRow.push(' ');
+            word.split('').forEach(char => currentRow.push(char));
+          } else {
+            grid.push(currentRow);
+            currentRow = word.split('');
+            while (currentRow.length > MAX_COLS) {
+              grid.push(currentRow.slice(0, MAX_COLS));
+              currentRow = currentRow.slice(MAX_COLS);
+            }
+          }
+        });
+        if (currentRow.length > 0) grid.push(currentRow);
+
+        return grid.map(row => {
+          const padding = Math.floor((MAX_COLS - row.length) / 2);
+          const paddedRow = Array(MAX_COLS).fill(null);
+          row.forEach((char, i) => {
+            paddedRow[padding + i] = char;
+          });
+          return paddedRow;
+        });
+      }
+
+      // Render Logic
+      function renderBoard(config) {
+        dom.panel.innerHTML = '';
+        state.revealed = [];
+        const phrase = config.phrase || 'GENIALLY';
+        const layout = calculateLayout(phrase);
+
+        layout.forEach((row, rIdx) => {
+          row.forEach((char, cIdx) => {
+            const cell = document.createElement('div');
+            cell.className = 'panel-cell';
+
+            if (!char || char === ' ') {
+              cell.classList.add('empty');
+            } else {
+              const inner = document.createElement('div');
+              inner.className = 'panel-cell-inner';
+
+              const front = document.createElement('div');
+              front.className = 'panel-cell-face panel-cell-front';
+
+              const back = document.createElement('div');
+              back.className = 'panel-cell-face panel-cell-back';
+              back.textContent = char;
+
+              inner.appendChild(front);
+              inner.appendChild(back);
+              cell.appendChild(inner);
+
+              state.revealed.push({
+                dom: inner,
+                letter: char,
+                isRevealed: false,
+              });
+            }
+            dom.panel.appendChild(cell);
+          });
+        });
+      }
+
+      function renderKeyboard(config) {
+        dom.keyboard.innerHTML = '';
+        const lang = config.language || 'en';
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        if (lang === 'es') letters.splice(14, 0, 'Ñ');
+
+        letters.forEach(char => {
+          const btn = document.createElement('button');
+          btn.className = 'alphabet-button';
+          btn.textContent = char;
+          btn.dataset.letter = char;
+          btn.setAttribute('aria-label', char);
+
+          btn.addEventListener('click', e => handleGuess(char, btn, e, config));
+
+          dom.keyboard.appendChild(btn);
+        });
+      }
+
+      function renderLives(config) {
+        dom.lives.innerHTML = '';
+        const max = state.totalAttempts;
+        const visibleDots = Math.min(max, 10);
+
+        for (let i = 0; i < visibleDots; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'life-indicator';
+          dom.lives.appendChild(dot);
+        }
+
+        if (max > 10) {
+          const overflow = document.createElement('div');
+          overflow.className = 'life-overflow';
+          overflow.textContent = `+${max - 10}`;
+          dom.lives.appendChild(overflow);
+        }
+      }
+
+      function updateStyles(config) {
+        // Color Mappings based on configSchema
+        const primaryColor = config.primaryColor || '#4a90e2';
+        const hitColor = config.hitColor || '#2ecc71';
+        const missColor = config.missColor || '#e74c3c';
+        const cellHidden = config.cellHiddenColor || '#e0e0e0';
+        const cellRevealed = hitColor; // Use hit color for consistency
+
+        // Attempt colors from configuration
+        const availableAttempt = config.remainingAttemptsColor || '#f1c40f';
+        const spentAttempt = config.failedAttemptsColor || '#bdc3c7';
+
+        // Hint styling
+        const hintColor = config.hintColor || '#666666';
+
+        // Background Color Config
+        const containerBg = config.backgroundColor || '#ffffff';
+
+        // Defaults
+        const keyText = '#ffffff';
+        const letterSize = '20px';
+        const keyPadding = '12px';
+
+        dom.root.style.setProperty('--key-bg', primaryColor);
+        dom.root.style.setProperty('--key-text', keyText);
+        dom.root.style.setProperty('--key-padding', keyPadding);
+
+        dom.root.style.setProperty('--cell-hidden', cellHidden);
+        dom.root.style.setProperty('--cell-revealed', cellRevealed);
+        dom.root.style.setProperty('--letter-size', letterSize);
+
+        dom.root.style.setProperty('--hit-color', hitColor);
+        dom.root.style.setProperty('--miss-color', missColor);
+
+        dom.root.style.setProperty('--attempt-available', availableAttempt);
+        dom.root.style.setProperty('--attempt-spent', spentAttempt);
+
+        dom.root.style.setProperty('--hint-color', hintColor);
+        dom.root.style.setProperty('--container-bg', containerBg);
+
+        // Fonts
+        if (config.gameFont && config.gameFont.name) {
+          dom.root.style.setProperty('--font-family-gameFont', config.gameFont.name);
+        }
+        if (config.hintFont && config.hintFont.name) {
+          dom.root.style.setProperty('--font-family-hintFont', config.hintFont.name);
+        }
+
+        // Hint visibility
+        if (config.showHint === 'yes' && config.hint) {
+          dom.hintText.textContent = config.hint;
+          dom.hintContainer.style.display = 'flex'; // Use flex to align icon
+        } else {
+          dom.hintContainer.style.display = 'none';
+        }
+      }
+
+      // Game Logic
+      function handleGuess(char, btn, event, config) {
+        if (state.isGameOver || btn.classList.contains('disabled')) {
+          return;
+        }
+
+        btn.classList.add('disabled');
+        const matches = state.revealed.filter(item => item.letter === char);
+        const isCorrect = matches.length > 0;
+
+        const duration = 1500;
+        const particles = true;
+        const vibrate = true;
+
+        if (isCorrect) {
+          // --- CORRECT GUESS ---
+          btn.classList.add('correct');
+          btn.classList.add('anim-pulse');
+
+          if (particles) {
+            const rect = btn.getBoundingClientRect();
+            triggerParticles(
+              rect.left + rect.width / 2,
+              rect.top + rect.height / 2,
+              config.hitColor || '#2ecc71',
+            );
+          }
+
+          if (vibrate && navigator.vibrate) {
+            navigator.vibrate(50);
+          }
+
+          // Execute Hit Action
+          if (config.hitAction) {
+            genially.runAction(config.hitAction);
+          }
+
+          // Logic Reveal
+          let allRevealed = true;
+          state.revealed.forEach(item => {
+            if (item.letter === char) {
+              item.isRevealed = true;
+              item.dom.classList.add('revealed');
+            }
+            if (!item.isRevealed) allRevealed = false;
+          });
+
+          if (allRevealed) {
+            state.isGameOver = true;
+            if (config.winAction)
+              setTimeout(() => genially.runAction(config.winAction), duration);
+          }
+        } else {
+          // --- INCORRECT GUESS ---
+          btn.classList.add('incorrect');
+
+          if (vibrate && navigator.vibrate) navigator.vibrate([50, 50, 50]);
+
+          // Execute Miss Action
+          if (config.missAction) {
+            genially.runAction(config.missAction);
+          }
+
+          state.attemptsLeft--;
+          updateLivesUI();
+
+          if (state.attemptsLeft <= 0) {
+            state.isGameOver = true;
+            // Reveal all
+            state.revealed.forEach(item => {
+              if (!item.isRevealed) {
+                setTimeout(() => item.dom.classList.add('revealed'), 300);
+              }
+            });
+            if (config.loseAction)
+              setTimeout(() => genially.runAction(config.loseAction), duration);
+          }
+        }
+      }
+
+      function updateLivesUI() {
+        const indicators = Array.from(dom.lives.querySelectorAll('.life-indicator'));
+        const visibleCurrent = Math.min(state.attemptsLeft, 10);
+
+        indicators.forEach((dot, idx) => {
+          if (idx < visibleCurrent) {
+            dot.classList.remove('inactive');
+          } else {
+            dot.classList.add('inactive');
+          }
+        });
+
+        const overflow = dom.lives.querySelector('.life-overflow');
+        if (overflow) {
+          const extra = Math.max(0, state.attemptsLeft - 10);
+          overflow.textContent = extra > 0 ? `+${extra}` : '';
+          overflow.style.opacity = extra > 0 ? '1' : '0';
+        }
+      }
+
+      // Main Init
+      function render(config) {
+        console.log('[Password] Render called with config:', config);
+        state.config = config;
+        // Only reset game state if critical params change or first load
+        state.isGameOver = false;
+        state.totalAttempts = sanitizeAttempts(config.maxAttempts);
+        state.attemptsLeft = state.totalAttempts;
+
+        updateStyles(config);
+        renderBoard(config);
+        renderKeyboard(config);
+        renderLives(config);
+        updateLivesUI();
+      }
+
+      // --- Event Listeners ---
+      document.addEventListener('keydown', e => {
+        if (state.isGameOver) return;
+
+        const key = e.key.toUpperCase();
+
+        // Allow alphabet letters + Ñ
+        if (/^[A-ZÑ]$/.test(key)) {
+          // Find the corresponding button
+          const btn = dom.keyboard.querySelector(`button[data-letter="${key}"]`);
+
+          if (btn && !btn.classList.contains('disabled')) {
+            handleGuess(key, btn, e, state.config);
+          }
+        }
+      });
+
+      // Genially Connection
+      (async () => {
+        const initialConfig = await genially.connect();
+
+        genially.on('config', newConfig => {
+          render(newConfig);
+        });
+
+        render(initialConfig);
+      })();
+    </script>
+  </body>
+</html>

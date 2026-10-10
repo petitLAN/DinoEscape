@@ -1,0 +1,81 @@
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/1fee6c66d83d819a.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(assets/7879ccfb59501552.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Skranji';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/8c3059155daeb0da.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Skranji';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(assets/f96100505252cba4.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/9a061fd2c1c02ed2.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url(assets/57b8628104f11553.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Pontano Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/ad0302d29f38483b.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Pontano Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url(assets/c4c8889c106d7567.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  src: url(assets/98b910f0208e132f.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: normal;
+  src: url(assets/a0ab9869bed1d244.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/2ca01c3c04f8fd5b.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 700;
+  src: url(assets/ed1ebf077c176d42.ttf) format('truetype');
+}
+
+@font-face{font-family:"Unbounded-Medium";font-weight:500;src:url("assets/f5970fd0594402c8.ttf") format("truetype");font-display:swap}
