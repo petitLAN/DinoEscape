@@ -1,3 +1,3 @@
-Optie 1: [Download latest release (zip)](https://github.com/USERNAME/REPOSITORY/releases/latest) Open de start.bat om de website te laden in een  localhost.
+Optie 1: [⬇️ Download DinoEscape ZIP](https://github.com/petitLAN/DinoEscape/releases/latest/download/DinoEscape.zip) Open de start.bat om de website te laden in een  localhost.
 
-Optie 2: [Download latest single-html 'Piertjes-Verjaardagsavontuur.html'](https://github.com/USERNAME/REPOSITORY/releases/latest). Open de html in je browser.
+Optie 2: [Download latest single-html 'Piertjes-Verjaardagsavontuur.html'](https://github.com/petitLAN/DinoEscape/releases/latest). Open de html in je browser.
