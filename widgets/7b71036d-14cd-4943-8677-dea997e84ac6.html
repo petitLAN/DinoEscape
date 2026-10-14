@@ -1396,6 +1396,13 @@
       }
 
       // --- Event Listeners ---
+      // The story forwards keys when the embedded puzzle has not been clicked.
+      window.addEventListener('message', e => {
+        if(e.source!==parent||typeof e.data?.escapePuzzleKey!=='string')return;
+        const key=e.data.escapePuzzleKey;
+        if(key==='ENTER'||key==='BACKSPACE'||/^[A-ZÑ]$/.test(key))handleInput(key);
+      });
+
 
       document.addEventListener('keydown', e => {
         if (state.isGameOver) return;

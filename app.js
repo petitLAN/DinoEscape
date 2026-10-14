@@ -50,3 +50,13 @@ function plain(n){return n.text||(n.content||[]).map(plain).join(' ');}
 function animate(motion,inner,e){const name=e.EffectIn;if(name&&name!=='none'){motion.style.animation=`${name} ${({vel1:.5,vel2:1,vel3:2,vel4:3,vel5:4})[e.DurationIn]||2}s ${px(e.DelayIn)}s both`;}if(e.Effect&&e.Effect!=='none'){inner.style.animation=`${e.Effect==='random'?'float':e.Effect} 3s ease-in-out infinite`;}if(e.EffectHover&&e.EffectHover!=='none')motion.dataset.hover=e.EffectHover;}
 window.ESCAPE={run,states:widgetStates,get current(){return current;}};
 document.getElementById('back').onclick=back;document.getElementById('home').onclick=()=>go(slides[0].Id);document.getElementById('close').onclick=closePopup;document.getElementById('overlay').onclick=e=>{if(e.target.id==='overlay')closePopup();};document.getElementById('mute').onclick=()=>{muted=!muted;sounds.forEach(a=>a.muted=muted);document.getElementById('mute').textContent=muted?'♪̸':'♫';document.getElementById('mute').setAttribute('aria-label',muted?'Geluid aanzetten':'Geluid uitzetten');document.querySelectorAll('iframe').forEach(f=>f.contentWindow?.postMessage({escapeMute:muted},'*'));};document.getElementById('full').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup();});go(current,false);
+
+// Accept desktop keys immediately, even while focus remains in the story page.
+document.addEventListener('keydown', e => {
+ if(current!=='66b3cc99-fb94-4ab8-85f0-d1a494f6bf1e'||e.defaultPrevented||e.ctrlKey||e.altKey||e.metaKey||e.isComposing||!document.getElementById('overlay').hidden)return;
+ if(e.target?.closest?.('button,input,textarea,select,[contenteditable="true"]'))return;
+ const key=e.key.toUpperCase();
+ if(key!=='ENTER'&&key!=='BACKSPACE'&&!/^[A-ZÑ]$/.test(key))return;
+ const frame=[...document.querySelectorAll('iframe[data-widget-id]')].find(f=>f.dataset.widgetId==='7b71036d-14cd-4943-8677-dea997e84ac6');
+ if(frame?.contentWindow){e.preventDefault();frame.contentWindow.postMessage({escapePuzzleKey:key},'*');}
+});
